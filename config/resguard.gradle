@@ -1,0 +1,39 @@
+apply plugin: 'AndResGuard'
+andResGuard {
+//    mappingFile = file("${buildDir}/bakApk/${patchName}-resource_mapping.txt")
+//    mappingFile = null
+    use7zip = true
+    useSign = true
+    keepRoot = false
+    // add <yourpackagename>.R.drawable.icon into whitelist.
+    // because the launcher will get the icon with his name
+    whiteList = [
+            "R.mipmap.ic_launcher",
+            //https://docs.fabric.io/android/crashlytics/build-tools.html
+            "R.string.com.crashlytics.*",
+            "R.string.umeng*",
+            "R.string.UM*",
+            "R.string.tb_*",
+            "R.layout.umeng*",
+            "R.layout.tb_*",
+            "R.drawable.umeng*",
+            "R.drawable.tb_*",
+            "R.anim.umeng*",
+            "R.color.umeng*",
+            "R.color.tb_*",
+            "R.style.*UM*",
+            "R.style.umeng*",
+            "R.id.umeng*"
+    ]
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+            "resources.arsc"
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.1.16'
+//        path = "/usr/local/bin/7za"
+    }
+}
