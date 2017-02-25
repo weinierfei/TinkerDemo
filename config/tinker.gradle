@@ -33,7 +33,7 @@ task AtinkerPatchPrepare << {
 ext {
     //for some reason, you may want to ignore tinkerBuild, such as instant run debug build?
     tinkerEnabled = true
-    appName = "Allinmd"
+    appName = "TinkerDemo"
     //for normal build
     //old apk file to build patch apk
     tinkerOldApkPath = ""
@@ -303,7 +303,7 @@ if (buildWithTinker()) {
                         if (!isNeedBackup) {
                             return 0
                         }
-                        def date = new Date().format("MMdd-HH-mm-ss")
+                        def date = new Date().format("yyyyMMdd-HH-mm-ss")
                         def orgAndresPrefix = "AndResGuard_${appName}_${versionNamePrefix}_${(buildTime())}"
                         def orgApkPrefix = "${appName}_${versionNamePrefix}_${buildTime()}"
                         def targetApkPrefix = "${appName}_${versionNamePrefix}_${date}"

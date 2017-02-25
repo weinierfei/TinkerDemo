@@ -1,12 +1,16 @@
 apply plugin: 'com.android.library'
 
+
+def cfg = rootProject.ext.android // 工程配置
+def libs = rootProject.ext.dependencies // 库依赖
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion cfg.compileSdkVersion
+    buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 21
+        minSdkVersion cfg.minSdkVersion
+        targetSdkVersion cfg.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -26,13 +30,13 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    testCompile 'junit:junit:4.12'
+    testCompile libs["junit"]
+    compile libs["appcompat-v7"]
 
     compile "com.android.support:multidex:1.0.1"
     //可选，用于生成application类
-    provided("com.tencent.tinker:tinker-android-anno:1.7.7")
+    compile libs["tinker-android-anno"]
     //tinker的核心库
-    compile("com.tencent.tinker:tinker-android-lib:1.7.7")
+    compile libs["tinker-android-lib"]
 
 }
