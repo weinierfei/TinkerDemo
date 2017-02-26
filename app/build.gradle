@@ -22,8 +22,10 @@ android {
         versionName cfg.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-
+        //用git commit作为版本号
         buildConfigField "String", "TINKER_ID", "\"${getTinkerIdValue()}\""
+        //将版本号作为tinerId
+//        buildConfigField "String", "TINKER_ID", "\"${cfg.versionCode}\""
 
     }
 
