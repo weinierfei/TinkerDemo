@@ -1,3 +1,5 @@
+def tinkerVersion = "1.7.7"
+
 ext {
     android = [
             buildToolsVersion: "25.0.2",
@@ -8,9 +10,9 @@ ext {
             versionName      : "1.0"
     ]
 
-    dependencies = ["appcompat-v7"       : 'com.android.support:appcompat-v7:24.0.0',
+    dependencies = ["appcompat-v7"       : "com.android.support:appcompat-v7:24.2.0",
                     "junit"              : 'junit:junit:4.12',
-                    "tinker-android-anno": 'com.tencent.tinker:tinker-android-anno:1.7.7',
-                    "tinker-android-lib" : 'com.tencent.tinker:tinker-android-lib:1.7.7'
+                    "tinker-android-anno": "com.tencent.tinker:tinker-android-anno:${tinkerVersion}",
+                    "tinker-android-lib" : "com.tencent.tinker:tinker-android-lib:${tinkerVersion}"
     ]
 }
