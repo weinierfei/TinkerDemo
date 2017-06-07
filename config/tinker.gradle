@@ -5,23 +5,25 @@ def versionNamePrefix = "v${cfg.versionName}"
 //备份文件夹显位置
 def bakPath = file("${rootDir}/tinkerBackup/")
 //AndResguard生成的文件位置
-def bakResguard = file("${bakPath}")
-def debugBakPath = file("${buildDir.absolutePath}/tinkerBackup")
+def bakResguardVersion = file("${bakPath}")
+def bakResguard = file("${bakPath}/${versionNamePrefix}")
 //是否需要备份
 def isNeedBackup = true
 
-task AtinkerPatchPrepare << {
-    isNeedBackup = false
-    def backUpVersion = ""
-    if (new File("${bakResguard}/version.txt").exists()) {
-        backUpVersion = new File("${bakResguard}/version.txt").getText()
-    }
+task AtinkerPatchPrepare {
+    doLast {
+        isNeedBackup = false
+        def backUpVersion = ""
+        if (new File("${bakResguardVersion}/version.txt").exists()) {
+            backUpVersion = new File("${bakResguardVersion}/version.txt").getText()
+        }
 
-    if (!backUpVersion.isEmpty()) {
-        println("------------app version : + ${backUpVersion} \n")
-        project.tinkerPatch.oldApk = "${bakResguard}/${backUpVersion}.apk"
-        project.tinkerPatch.buildConfig.applyResourceMapping = "${bakResguard}/${backUpVersion}_R.txt"
-        project.andResGuard.mappingFile = file("${bakResguard}/resource_mapping_${backUpVersion}.txt")
+        if (!backUpVersion.isEmpty()) {
+            println("------------app version : + ${bakResguardVersion} \n")
+            project.tinkerPatch.oldApk = "${bakResguard}/${backUpVersion}.apk"
+            project.tinkerPatch.buildConfig.applyResourceMapping = "${bakResguard}/${backUpVersion}_R.txt"
+            project.andResGuard.mappingFile = file("${bakResguard}/resource_mapping_${backUpVersion}.txt")
+        }
     }
 }
 
@@ -258,24 +260,24 @@ if (buildWithTinker()) {
      * bak apk and mapping
      */
     android.applicationVariants.all { variant ->
-        /**
-         * task type, you want to bak
-         */
-        def taskName = 'release'
-//        def taskName = 'debug'
 
-        if (taskName.equals("debug")) {
-            bakResguard = file("${buildDir.absolutePath}/tinkerBackup")
-        }
+        def taskName = variant.name
+        //构建类型名称
+        def buildTypeName = variant.buildType.name
+
+        def date = new Date().format("MMdd-HH-mm-ss")
+        def orgAndresPrefix = "AndResGuard_${appName}_${versionNamePrefix}_${(buildTime())}"
+        def orgApkPrefix = "${appName}_${versionNamePrefix}_${buildTime()}"
+        def targetApkPrefix = "${appName}_${versionNamePrefix}_${date}"
 
         tasks.all {
-            if (variant.buildType.name == taskName) {
+            if (buildTypeName == 'release') {
 
                 def backUpVersion = ""
-                if (new File("${bakResguard}/version.txt").exists()) {
-                    backUpVersion = new File("${bakResguard}/version.txt").getText()
+                if (new File("${bakResguardVersion}/version.txt").exists()) {
+                    backUpVersion = new File("${bakResguardVersion}/version.txt").getText()
                 }
-                if ("tinkerPatch${taskName.capitalize()}".equalsIgnoreCase(it.name)) {
+                if ("tinkerPatch${buildTypeName}".equalsIgnoreCase(it.name)) {
                     def resguardTask
                     tasks.all {
                         if (it.name.equalsIgnoreCase("resguard${taskName.capitalize()}")) {
@@ -285,7 +287,7 @@ if (buildWithTinker()) {
 
                     it.doFirst({
                         // change build apk path
-                        it.buildApkPath = "${buildDir}/outputs/apk/AndResGuard_${appName}_${versionNamePrefix}_${buildTime()}/${appName}_${versionNamePrefix}_${buildTime()}_signed_7zip_aligned.apk"
+                        it.buildApkPath = "${buildDir}/outputs/apk/${orgAndresPrefix}/${orgApkPrefix}_signed_7zip_aligned.apk"
                         project.android.ext.tinkerOldApkPath = "${bakResguard}/${backUpVersion}.apk"
                         project.android.ext.tinkerApplyResourcePath = "${bakResguard}/${backUpVersion}_R.txt"
                     })
@@ -303,21 +305,23 @@ if (buildWithTinker()) {
                         if (!isNeedBackup) {
                             return 0
                         }
-                        def date = new Date().format("yyyyMMdd-HH-mm-ss")
-                        def orgAndresPrefix = "AndResGuard_${appName}_${versionNamePrefix}_${(buildTime())}"
-                        def orgApkPrefix = "${appName}_${versionNamePrefix}_${buildTime()}"
-                        def targetApkPrefix = "${appName}_${versionNamePrefix}_${date}"
 
                         //backUpVersion
-                        File version = new File("${bakResguard}/version.txt")
+                        File version = new File("${bakResguardVersion}/version.txt")
                         if (!version.parentFile.exists()) {
                             version.parentFile.mkdir()
                         }
                         version.write("${targetApkPrefix}")
 
+                        // 目标文件夹
+                        File intoFileDir = file(bakResguard.absolutePath)
+                        //对于同一版本,如果存在一个备份,先删除备份
+                        if (intoFileDir.exists()){
+                            delete(intoFileDir)
+                        }
                         copy {
                             from "${buildDir}/outputs/apk/${orgAndresPrefix}/${orgApkPrefix}_signed_7zip_aligned.apk"
-                            into file(bakResguard.absolutePath)
+                            into intoFileDir
                             rename { String fileName ->
                                 try {
                                     fileName.replace("${orgApkPrefix}_signed_7zip_aligned.apk", "${targetApkPrefix}.apk")
@@ -327,19 +331,19 @@ if (buildWithTinker()) {
                                 }
                             }
                             from "${buildDir}/outputs/mapping/${taskName}/mapping.txt"
-                            into file(bakResguard.absolutePath)
+                            into intoFileDir
                             rename { String fileName ->
                                 fileName.replace("mapping.txt", "${targetApkPrefix}_mapping.txt")
                             }
 
                             from "${buildDir}/intermediates/symbols/${taskName}/R.txt"
-                            into file(bakResguard.absolutePath)
+                            into intoFileDir
                             rename { String fileName ->
                                 fileName.replace("R.txt", "${targetApkPrefix}_R.txt")
                             }
 
                             from "${buildDir}/outputs/apk/${orgAndresPrefix}/resource_mapping_${orgApkPrefix}.txt"
-                            into file(bakResguard.absolutePath)
+                            into intoFileDir
                             rename { String fileName ->
                                 try {
                                     fileName.replace("resource_mapping_${orgApkPrefix}.txt", "resource_mapping_${targetApkPrefix}.txt")
