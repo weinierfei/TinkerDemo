@@ -70,6 +70,7 @@ Jenkins的搭建及相关用法请自行google.
 
 我们的Jenkins有一个线上job,由于我们使用master分支上线,因此在Jenkins的Branch Specifier中保持master不变
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/442695-4d0f9bab75cc7dc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 发布版本的时候使用**clean resguardRelease**命令,如图:
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/442695-d575c7f9ab5c4127.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
