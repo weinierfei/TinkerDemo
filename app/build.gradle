@@ -6,7 +6,7 @@ apply from: '../config/tinker.gradle'
 def cfg = rootProject.ext.android // 工程配置
 def libs = rootProject.ext.dependencies // 库依赖
 
-def buildTime() {
+static def buildTime() {
     def formattedDate = new Date().format('yyyyMMdd')
     return formattedDate
 }
@@ -43,6 +43,8 @@ android {
             } catch (ex) {
                 throw new InvalidUserDataException(ex.toString())
             }
+
+            v2SigningEnabled false
         }
     }
 
@@ -57,7 +59,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            if (output.outputFile != null && output.outputFile.name.endsWith('.apk') && 'release'.equals(variant.buildType.name)) {
+            if (output.outputFile != null && output.outputFile.name.endsWith('.apk') && 'release' == variant.buildType.name) {
                 def apkFile = new File(output.outputFile.getParent(), "${appName}_v${variant.versionName}_${buildTime()}.apk")
                 output.outputFile = apkFile
             }

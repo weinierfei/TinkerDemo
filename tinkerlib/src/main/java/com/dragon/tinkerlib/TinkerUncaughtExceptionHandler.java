@@ -61,6 +61,17 @@ public class TinkerUncaughtExceptionHandler implements Thread.UncaughtExceptionH
      * If it use Xposed, we can just clean patch or mention user to uninstall it.
      */
     private void tinkerPreVerifiedCrashHandler(Throwable ex) {
+        ApplicationLike applicationLike = TinkerManager.getTinkerApplicationLike();
+        if (applicationLike == null || applicationLike.getApplication() == null) {
+            TinkerLog.w(TAG, "applicationlike is null");
+            return;
+        }
+
+        if (!TinkerApplicationHelper.isTinkerLoadSuccess(applicationLike)) {
+            TinkerLog.w(TAG, "tinker is not loaded");
+            return;
+        }
+
         Throwable throwable = ex;
         boolean isXposed = false;
         while (throwable != null) {
@@ -68,15 +79,6 @@ public class TinkerUncaughtExceptionHandler implements Thread.UncaughtExceptionH
                 isXposed = TinkerUtils.isXposedExists(throwable);
             }
             if (isXposed) {
-                //method 1
-                ApplicationLike applicationLike = TinkerManager.getTinkerApplicationLike();
-                if (applicationLike == null || applicationLike.getApplication() == null) {
-                    return;
-                }
-
-                if (!TinkerApplicationHelper.isTinkerLoadSuccess(applicationLike)) {
-                    return;
-                }
                 boolean isCausedByXposed = false;
                 //for art, we can't know the actually crash type
                 //just ignore art

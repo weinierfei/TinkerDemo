@@ -24,6 +24,7 @@ import com.tencent.tinker.lib.util.TinkerLog;
 import com.tencent.tinker.loader.shareutil.SharePatchInfo;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Description:Tinker在修复或者升级补丁时的一些回调
@@ -48,7 +49,6 @@ public class TinkerPatchReporter extends DefaultPatchReporter {
     public void onPatchServiceStart(Intent intent) {
         super.onPatchServiceStart(intent);
         TinkerReport.onApplyPatchServiceStart();
-        UpgradePatchRetry.getInstance(context).onPatchServiceStart(intent);
         TinkerLog.i(TAG, "patch进程启动.intent==" + intent);
     }
 
@@ -56,14 +56,12 @@ public class TinkerPatchReporter extends DefaultPatchReporter {
      * 对合成的dex文件提前进行dexopt时出现异常
      *
      * @param patchFile
-     * @param dexFile
-     * @param optDirectory
-     * @param dexName
+     * @param dexFiles
      * @param t
      */
     @Override
-    public void onPatchDexOptFail(File patchFile, File dexFile, String optDirectory, String dexName, Throwable t) {
-        super.onPatchDexOptFail(patchFile, dexFile, optDirectory, dexName, t);
+    public void onPatchDexOptFail(File patchFile, List<File> dexFiles, Throwable t) {
+        super.onPatchDexOptFail(patchFile, dexFiles, t);
         TinkerReport.onApplyDexOptFail(t);
     }
 
@@ -102,7 +100,6 @@ public class TinkerPatchReporter extends DefaultPatchReporter {
     public void onPatchResult(File patchFile, boolean success, long cost) {
         super.onPatchResult(patchFile, success, cost);
         TinkerReport.onApplied(cost, success);
-        UpgradePatchRetry.getInstance(context).onPatchServiceResult();
     }
 
     /**
