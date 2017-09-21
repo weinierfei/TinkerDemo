@@ -16,8 +16,8 @@ Tinker官方[文档](https://github.com/Tencent/tinker/wiki)给出了详细的�
 1.主工程的[build.gradle](https://github.com/weinierfei/TinkerDemo/blob/master/build.gradle)文件添加tinker插件和资源混淆组件(AndResGuard)插件
 
 ```
- classpath 'com.tencent.mm:AndResGuard-gradle-plugin:1.1.16'
- classpath 'com.tencent.tinker:tinker-patch-gradle-plugin:1.7.7'
+classpath 'com.tencent.mm:AndResGuard-gradle-plugin:1.2.3'
+classpath "com.tencent.tinker:tinker-patch-gradle-plugin:${TINKER_VERSION}"
 ```
 2.主Module依赖tinkelib
 
