@@ -10,7 +10,8 @@ ext {
 
     dependencies = ["appcompat-v7"       : "com.android.support:appcompat-v7:24.2.0",
                     "junit"              : 'junit:junit:4.12',
-                    "tinker-android-anno"      : "com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}",
-                    "tinker-android-lib" : "com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}"
+                    "tinker-android-anno": "com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}",
+                    "tinker-android-lib" : "com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}",
+                    "titlebar"           : 'cn.bingoogolapple:bga-titlebar:1.0.8'
     ]
 }

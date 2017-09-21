@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.bingoogolapple.titlebar.BGATitleBar
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TitleBar_Back"
+    app:bgatitlebar_isTitleTextBold="false"
+    />

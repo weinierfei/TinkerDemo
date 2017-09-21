@@ -76,6 +76,10 @@ dependencies {
     })
     compile libs["appcompat-v7"]
     compile project(':tinkerlib')
+
+    compile libs["titlebar"]
+
+    compile 'com.qmuiteam:qmui:1.0.3'
 }
 
 
